@@ -32,6 +32,11 @@ var moduleFunction = function(employer) {
 		}
 	}
 
+	
+	this.ping=function(){
+		//remember, 'this' refers to employer object because of assignment in object. could be handy.
+		return self.employerFilename;
+	}
 
 	this.listNames = function() {
 		for (var i in this) {
