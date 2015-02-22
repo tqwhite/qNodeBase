@@ -1,8 +1,9 @@
 'use strict';
 var events = require('events'),
 	util = require('util'),
-//	environmentChanges = require('environmentChanges'),
-	addBaseFunctions = require('qtoolsBase');
+	environmentChanges = require('environmentChanges'),
+	addBaseFunctions = require('qtoolsBase'),
+	nodeManipulation=require('nodeManipulation');
 
 //START OF moduleFunction() ============================================================
 
@@ -42,15 +43,20 @@ var moduleFunction = function(employer) {
 		for (var i in this) {
 			console.log(i);
 		}
-// 		for (var i = 0, len = environmentChanges.length; i < len; i++) {
-// 			var element = environmentChanges[i];
-// 			console.log(element);
-// 		}
+		for (var i = 0, len = environmentChanges.length; i < len; i++) {
+			var element = environmentChanges[i];
+			console.log(element);
+		}
+
 	}
+	
+	self.extend(this, nodeManipulation)
 
 	//BUILD RETURN OBJECT ====================================
 
 	this.forceEvent = forceEvent;
+
+
 	return this;
 };
 
