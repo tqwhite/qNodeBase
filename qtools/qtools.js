@@ -3,7 +3,7 @@ var events = require('events'),
 	util = require('util'),
 	environmentChanges = require('environmentChanges'),
 	addBaseFunctions = require('qtoolsBase'),
-	nodeManipulation=require('nodeManipulation');
+	nodeManipulation = require('nodeManipulation');
 
 //START OF moduleFunction() ============================================================
 
@@ -33,10 +33,13 @@ var moduleFunction = function(employer) {
 		}
 	}
 
-	
-	this.ping=function(){
+
+	this.ping = function() {
 		//remember, 'this' refers to employer object because of assignment in object. could be handy.
-		return self.employerFilename;
+		return {
+			employer: self.employerFilename,
+			qtoolsFile: module.filename
+		};
 	}
 
 	this.listNames = function() {
@@ -49,7 +52,7 @@ var moduleFunction = function(employer) {
 		}
 
 	}
-	
+
 	self.extend(this, nodeManipulation)
 
 	//BUILD RETURN OBJECT ====================================
@@ -64,3 +67,4 @@ var moduleFunction = function(employer) {
 
 util.inherits(moduleFunction, events.EventEmitter);
 module.exports = moduleFunction;
+
