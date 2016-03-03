@@ -3,7 +3,8 @@ var events = require('events'),
 	util = require('util'),
 	environmentChanges = require('environmentChanges'),
 	addBaseFunctions = require('qtoolsBase'),
-	nodeManipulation = require('nodeManipulation');
+	nodeManipulation = require('nodeManipulation'),
+	lodash = require('lodash');
 
 //START OF moduleFunction() ============================================================
 
@@ -33,6 +34,8 @@ var moduleFunction = function(employer) {
 		}
 	}
 
+
+	this._=lodash;
 
 	this.ping = function() {
 		//remember, 'this' refers to employer object because of assignment in object. could be handy.
