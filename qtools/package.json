@@ -11,8 +11,8 @@
   ],
   "author": "TQ White II",
   "license": "ISC",
-  
   "dependencies": {
     "render": "*"
-  }
+  },
+  "devDependencies": {}
 }
