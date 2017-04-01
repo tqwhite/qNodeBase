@@ -3,6 +3,7 @@ var events = require('events'),
 	util = require('util'),
 	environmentChanges = require('environmentChanges'),
 	addBaseFunctions = require('qtoolsBase'),
+	addLogFunctions = require('qtools-log'),
 	nodeManipulation = require('nodeManipulation'),
 	lodash = require('lodash');
 
@@ -21,6 +22,7 @@ var moduleFunction = function(employer) {
 		//INITIALIZE OBJECT ====================================
 
 	addBaseFunctions(this);
+	addLogFunctions(this);
 
 	if (typeof (employer) == 'object') {
 		this.employerFilePath = employer.filename ? employer.filename : '';
