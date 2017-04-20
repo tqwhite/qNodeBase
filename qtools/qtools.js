@@ -22,7 +22,6 @@ var moduleFunction = function(employer) {
 		//INITIALIZE OBJECT ====================================
 
 	addBaseFunctions(this);
-	addLogFunctions(this);
 
 	if (typeof (employer) == 'object') {
 		this.employerFilePath = employer.filename ? employer.filename : '';
@@ -59,6 +58,7 @@ var moduleFunction = function(employer) {
 	}
 
 	self.extend(this, nodeManipulation)
+	addLogFunctions(this);
 
 	//BUILD RETURN OBJECT ====================================
 
