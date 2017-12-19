@@ -12,7 +12,8 @@
   "author": "TQ White II",
   "license": "ISC",
   "dependencies": {
-    "render": "*"
+    "render": "*",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {}
 }
