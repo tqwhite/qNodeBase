@@ -5,7 +5,8 @@ var events = require('events'),
 	addBaseFunctions = require('qtoolsBase'),
 	addLogFunctions = require('qtools-log'),
 	nodeManipulation = require('nodeManipulation'),
-	lodash = require('lodash');
+	lodash = require('lodash'),
+	addConfigFileProcessor=require('qtools-config-file-processor');
 
 //START OF moduleFunction() ============================================================
 
@@ -17,13 +18,13 @@ var moduleFunction = function(employer) {
 				eventName: eventName,
 				data: outData
 			});
-		}
+		};
 
-		//INITIALIZE OBJECT ====================================
+	//INITIALIZE OBJECT ====================================
 
 	addBaseFunctions(this);
 
-	if (typeof (employer) == 'object') {
+	if (typeof employer == 'object') {
 		this.employerFilePath = employer.filename ? employer.filename : '';
 
 		var split = this.employerFilePath.split('/');
@@ -34,9 +35,8 @@ var moduleFunction = function(employer) {
 			this.employerFilename = '';
 		}
 	}
-
-
-	this._=lodash;
+	
+	this._ = lodash;
 
 	this.ping = function() {
 		//remember, 'this' refers to employer object because of assignment in object. could be handy.
@@ -44,7 +44,7 @@ var moduleFunction = function(employer) {
 			employer: self.employerFilename,
 			qtoolsFile: module.filename
 		};
-	}
+	};
 
 	this.listNames = function() {
 		for (var i in this) {
@@ -54,17 +54,16 @@ var moduleFunction = function(employer) {
 			var element = environmentChanges[i];
 			console.log(element);
 		}
+	};
 
-	}
-
-	self.extend(this, nodeManipulation)
+	self.extend(this, nodeManipulation);
 	addLogFunctions(this);
+	addConfigFileProcessor(this);
 
 	//BUILD RETURN OBJECT ====================================
 
 	this.forceEvent = forceEvent;
-
-
+	
 	return this;
 };
 
