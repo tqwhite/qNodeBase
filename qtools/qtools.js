@@ -6,13 +6,13 @@ var events = require('events'),
 	addLogFunctions = require('qtools-log'),
 	nodeManipulation = require('nodeManipulation'),
 	lodash = require('lodash'),
-	addConfigFileProcessor=require('qtools-config-file-processor');
-	
-	const dayjs=require('dayjs');
+	addConfigFileProcessor = require('qtools-config-file-processor');
+
+const dayjs = require('dayjs');
 
 //START OF moduleFunction() ============================================================
 
-var moduleFunction = function(employer) {
+var moduleFunction = function(employer, args={}) {
 	events.EventEmitter.call(this);
 	var self = this,
 		forceEvent = function(eventName, outData) {
@@ -39,7 +39,7 @@ var moduleFunction = function(employer) {
 	}
 	
 	this._ = lodash;
-	this.dayjs = dayjs;
+	this.dayjs = dayjs; //https://www.npmjs.com/package/dayjs
 
 	this.ping = function() {
 		//remember, 'this' refers to employer object because of assignment in object. could be handy.
@@ -53,8 +53,8 @@ var moduleFunction = function(employer) {
 		for (var i in this) {
 			console.log(i);
 		}
-		for (var i = 0, len = environmentChanges.length; i < len; i++) {
-			var element = environmentChanges[i];
+		for (var i = 0, len = environmentChanges.docList.length; i < len; i++) {
+			var element = environmentChanges.docList[i];
 			console.log(element);
 		}
 	};
@@ -62,6 +62,7 @@ var moduleFunction = function(employer) {
 	self.extend(this, nodeManipulation);
 	addLogFunctions(this);
 	addConfigFileProcessor(this);
+	environmentChanges.addMorePrototypes(this, args.updatePrototypes);
 
 	//BUILD RETURN OBJECT ====================================
 
