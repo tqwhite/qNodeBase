@@ -17,6 +17,13 @@ The workList functions must have the signature:
 		next(err, result); //mandatory
 	}
 
+As of 6/7/19, there is a special value of err, skipRestOfPipe, eg:
+
+next('skipRestOfPipe', result);
+
+This will do as the symbol says, skip the rest of the pipe. It serves the role of 'continue'
+in loops. Practically speaking, it calls the callback with the current value of result and no error.
+
 The optional callback function is called as:
 
 	callback(err, result);
@@ -34,11 +41,18 @@ const asynchronousPipe = (...args) => {
 	if (args.length == 3) {
 		initial = args[1];
 	}
-
+	
+	
 	const recursion = (err, result, workListInx) => {
 		if (err) {
-			callback(err, result);
-			return;
+			if (err=='skipRestOfPipe'){
+				callback('', result);
+				return;
+			}
+			else{
+				callback(err, result);
+				return;
+			}
 		}
 
 		if (workListInx > workList.length - 1) {
