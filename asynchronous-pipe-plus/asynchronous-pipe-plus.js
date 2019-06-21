@@ -5,8 +5,7 @@ const qtools = new qtoolsGen(module, { updatePrototypes: true });
 //START OF moduleFunction() ============================================================
 
 var moduleFunction = function(args) {
-
-/* 
+	/* 
 
 asynchronousPipe() takes an array of asyncronous function and executes them
 in sequence. As each completes, the next is called with the return result of the
@@ -40,89 +39,90 @@ asynchronousPipe() does not return anything.
 
  */
 
-// asyncPipe(workList, [initialValue,] callback);
-const asynchronousPipe = (...args) => {
-	const workList = args[0];
-	const callback = args[args.length - 1];
+	// asyncPipe(workList, [initialValue,] callback);
+	const asynchronousPipe = (...args) => {
+		const workList = args[0];
+		const callback = args[args.length - 1];
 
-	let initial;
-	if (args.length == 3) {
-		initial = args[1];
-	}
-	
-	
-	const recursion = (err, result, workListInx) => {
-		if (err) {
-			if (err=='skipRestOfPipe'){
-				callback('', result);
-				return;
-			}
-			else{
-				callback(err, result);
-				return;
-			}
+		let initial;
+		if (args.length == 3) {
+			initial = args[1];
 		}
 
-		if (workListInx > workList.length - 1) {
-			if (typeof callback == 'function') {
-				callback('', result);
+		const recursion = (err, result, workListInx) => {
+			if (err) {
+				if (err == 'skipRestOfPipe') {
+					callback('', result);
+					return;
+				} else {
+					callback(err, result);
+					return;
+				}
 			}
-			return;
-		}
-		workList[workListInx](result, (err, result) => {
-			recursion(err, result, workListInx + 1);
-		});
+
+			if (workListInx > workList.length - 1) {
+				if (typeof callback == 'function') {
+					callback('', result);
+				}
+				return;
+			}
+			workList[workListInx](result, (err, result) => {
+				recursion(err, result, workListInx + 1);
+			});
+		};
+		recursion('', initial, 0);
 	};
-	recursion('', initial, 0);
-};
-
-
-
 	const taskListPlus = function() {
-
 		const taskList = [];
-		const hiddenArgsName='globalArgs';
-		
-		const addOptions=options=>{
-			if (options.debug){
-				switch (options.debug){
+		const hiddenArgsName = 'globalArgs';
+
+		const addOptions = options => {
+			if (options.debug) {
+				switch (options.debug) {
 					case 'properties':
 						//{debug:'properties', label:'identifier'}
-						taskList.push((args, next)=>{
-							qtools.logDebug(`\nLIST: args (${options.label?options.label:''}) =======`);
+						taskList.push((args, next) => {
+							qtools.logDebug(
+								`\nLIST: args (${options.label ? options.label : ''}) =======`
+							);
 							qtools.listProperties(args);
 							qtools.logDebug('======= args\n');
 						});
-					break;
+						break;
 					case 'fileMarker':
 						//{debug:'fileMarker', label:'identifier'}
-						taskList.push((args, next)=>{
-							qtools.logDebug(`\n=-========= (${options.label?options.label:''}) =======\n`);
+						taskList.push((args, next) => {
+							qtools.logDebug(
+								`\n=-========= (${
+									options.label ? options.label : ''
+								}) =======\n`
+							);
 						});
-					break;
+						break;
 				}
-			
 			}
-		}
+		};
 
 		this.push = function(item, propertyList, options) {
 			if (qtools.toType(propertyList) == 'array') {
 				taskList.push(this.reduceToLocalScope(propertyList));
 			}
 
-			
-			if (options){
-			 addOptions(options);
+			if (options) {
+				addOptions(options);
 			}
 			taskList.push(item);
-			this.length=taskList.length;
+			this.length = taskList.length;
 		};
 
-		this.addFromDelegate = function(targetFunction, propertyList, options={}) {
+		this.addFromDelegate = function(
+			targetFunction,
+			propertyList,
+			options = {}
+		) {
 			if (qtools.toType(propertyList) == 'array') {
 				taskList.push(this.reduceToLocalScope(propertyList));
 			}
-
 
 			targetFunction();
 		};
@@ -130,44 +130,69 @@ const asynchronousPipe = (...args) => {
 		this.getList = function() {
 			return taskList;
 		};
-		
-		this.list=()=>{
-			taskList.forEach(item=>console.log(item.toString()+'\n-------------\n'));
-		}
-		
-		const isScopeBad=(args, list, strict=false,)=>{
-			const missing=list.filter(name=>typeof(args[name])=='undefined');
-			const extra=Object.keys(args).filter(name=>!list.includes(name));
-			let result='';
-			
-			const missingString=missing.join(', ');
-			if (missingString && missingString!=`${hiddenArgsName}`){
-				result=`isScopeBad() found missing parameters: ${missingString} `;
-				}
-				
 
+		this.list = () => {
+			taskList.forEach(item =>
+				console.log(item.toString() + '\n-------------\n')
+			);
+		};
 
-			const extraString=extra.join(', ').replace(new RegExp(`(, )*${hiddenArgsName}*`),'');
-			if (strict && extraString && extraString!=hiddenArgsName){
-				result+=`isScopeBad() found extra parameters: ${extraString} `;
+		const isScopeBad = (
+			args,
+			list,
+			strict = false,
+			originatingLine = 'no originating line given'
+		) => {
+			const missing = list.filter(name => typeof args[name] == 'undefined');
+			const extra = Object.keys(args).filter(name => !list.includes(name));
+			let result = '';
+
+			const missingString = missing.join(', ');
+			if (missingString && missingString != `${hiddenArgsName}`) {
+				result = `isScopeBad() found missing parameters: ${missingString} `;
 			}
-			if (result){
+
+			const extraString = extra
+				.join(', ')
+				.replace(new RegExp(`(, )*${hiddenArgsName}*`), '');
+			if (strict && extraString && extraString != hiddenArgsName) {
+				result += `isScopeBad() found extra parameters: ${extraString} `;
+			}
+
+			if (result) {
+				result = `${result} ${originatingLine}`;
 				qtools.logError(result);
 			}
-			return result?result:false;
-		}
-		
-		
-		this.enforceScope=(propertyList, strict=true)=>{
-			taskList.push((args, next)=>{
-			next(isScopeBad(args, propertyList, strict), args);
-		});}
+			return result ? result : false;
+		};
+
+		this.returnGlobalArgs = args => {
+			const newArgs = Object.assign({}, args[hiddenArgsName], args);
+			delete newArgs[hiddenArgsName];
+			return newArgs;
+		};
+
+		this.getArgsValue = (args, nameList) => {
+			return nameList.reduce((result, name) => {
+				result[name] = args[hiddenArgsName][name]
+					? args[hiddenArgsName][name]
+					: args[name];
+				return result;
+			}, {});
+		};
+
+		this.enforceScope = (propertyList, strict = true) => {
+			let e = new Error();
+			const originatingLine = e.stack.split('\n')[2];
+			taskList.push((args, next) => {
+				next(isScopeBad(args, propertyList, strict, originatingLine), args);
+			});
+		};
 
 		this.reduceToLocalScope = requiredPropertyList => (args, next) => {
 			const localCallback = (err, cleanedArgs) => {
 				next(err, cleanedArgs);
 			};
-
 
 			if (args[hiddenArgsName]) {
 				const tmpArgs = Object.assign({}, args[hiddenArgsName], args);
@@ -200,7 +225,6 @@ const asynchronousPipe = (...args) => {
 		};
 		return this;
 	};
-
 
 	return {
 		asynchronousPipe,
