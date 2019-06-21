@@ -1,0 +1,11 @@
+{
+  "name": "asynchronous-pipe-plus",
+  "version": "1.0.0",
+  "description": "Asynchronous-pipe for the future; strictly compatible with previous version except it returns an object instead of a simple function. Includes taskListPlus and utility functions I have learned to like\"",
+  "main": "asynchronous-pipe-plus.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TQ White II",
+  "license": "ISC"
+}
