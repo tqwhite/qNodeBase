@@ -46,7 +46,7 @@ const asynchronousPipe = (...args) => {
 	const recursion = (err, result, workListInx) => {
 		if (err) {
 			if (err=='skipRestOfPipe'){
-				callback('', result);
+				callback('skipRestOfPipe', result);
 				return;
 			}
 			else{
