@@ -58,6 +58,10 @@ var moduleFunction = function(employer, args={}) {
 			console.log(element);
 		}
 	};
+	
+	this.isTrue=value=>{
+		return (value==='true' || value===true)
+	}
 
 	self.extend(this, nodeManipulation);
 	addLogFunctions(this);
