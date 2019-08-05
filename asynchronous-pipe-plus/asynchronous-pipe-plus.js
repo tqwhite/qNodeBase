@@ -227,6 +227,7 @@ asynchronousPipe() does not return anything.
 	};
 
 	return {
+		pipeRunner:asynchronousPipe,
 		asynchronousPipe,
 		taskListPlus
 	};
