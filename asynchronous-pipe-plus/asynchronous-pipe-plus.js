@@ -74,7 +74,7 @@ asynchronousPipe() does not return anything.
 	};
 	const taskListPlus = function() {
 		const taskList = [];
-		const hiddenArgsName = 'globalArgs';
+		const hiddenArgsName = `asyncPipeHideFromScope${new Date().getTime()}`;
 
 		const addOptions = options => {
 			if (options.debug) {
