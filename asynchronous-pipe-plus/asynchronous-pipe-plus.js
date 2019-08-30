@@ -7,7 +7,7 @@ const qtools = new qtoolsGen(module, { updatePrototypes: true });
 var moduleFunction = function(args) {
 	/* 
 
-asynchronousPipe() takes an array of asyncronous function and executes them
+asynchronousPipe() takes an array of asynchronous function and executes them
 in sequence. As each completes, the next is called with the return result of the
 previous function.
 
