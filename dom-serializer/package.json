@@ -40,7 +40,7 @@
     "cheerio": "*",
     "expect.js": "~0.3.1",
     "jshint": "~2.3.0",
-    "lodash": "~2.4.1",
+    "lodash": "~4.17.15",
     "mocha": "*",
     "xyz": "0.4.x"
   },
