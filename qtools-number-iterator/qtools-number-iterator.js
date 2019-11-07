@@ -42,15 +42,26 @@ var moduleFunction = function(args) {
 				this[i] = element;
 			}
 		}
-
-		Number.prototype.iterate = iterator;
-		IterationThing.prototype.iterate = iterator;
-
-		Number.prototype.start = setStart;
-		IterationThing.prototype.start = setStart;
-
-		Number.prototype.increment = setIncrement;
-		IterationThing.prototype.increment = setIncrement;
+		
+		if (typeof(Number.prototype.qtIterate)=='undefined'){
+			Object.defineProperty(Number.prototype, 'qtIterate', {
+				value: iterator,
+				writable: false,
+				enumerable:false
+			});
+			
+			Object.defineProperty(Number.prototype, 'qtStart', {
+				value: setStart,
+				writable: false,
+				enumerable:false
+			});
+			
+			Object.defineProperty(Number.prototype, 'qtIncrement', {
+				value: setIncrement,
+				writable: false,
+				enumerable:false
+			});
+		}
 	};
 
 	this.addToPrototype = addToPrototype;
