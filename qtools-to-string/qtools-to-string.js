@@ -25,17 +25,21 @@ const toType = function(obj) {
 	
 	case 'array':
 		let separator=', '
+		let suffix='';
+		let prefix='';
 		if (typeof(args)=='string'){
 			separator=args;
 		}
 		else if (typeof(args)=='object'){
-			separator=args.separator;
+			separator=args.separator?args.separator:separator;
+			suffix=args.suffix?args.suffix:suffix;
+			prefix=args.prefix?args.prefix:prefix;
 		}
 		else if (typeof(args)!='undefined') {
 			throw `qtToString() says, string or {separator:'xxx'} are only valid arguments`
 		}
 		const tmp=this.join(separator).replace(new RegExp(`${separator}$`), '');
-		return tmp;
+		return `${prefix}${tmp}${suffix}`;
 	break;
 	default:
 		return this.toString();

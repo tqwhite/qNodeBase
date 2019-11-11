@@ -10,9 +10,9 @@ var moduleFunction = function(args) {
 		if (needle instanceof RegExp) {
 			let found = false;
 			this.forEach(item => {
-				found = found || item.match(needle);
+				found = (found || item.match(needle))?true:false;
 			});
-			return found?true:false;
+			return found;
 		} else {
 			return this.includes(needle);
 		}
