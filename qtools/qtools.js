@@ -1,7 +1,6 @@
 'use strict';
 var events = require('events'),
 	util = require('util'),
-	environmentChanges = require('environmentChanges'),
 	addBaseFunctions = require('qtoolsBase'),
 	addLogFunctions = require('qtools-log'),
 	nodeManipulation = require('nodeManipulation'),
@@ -62,7 +61,10 @@ var moduleFunction = function(employer, args={}) {
 	self.extend(this, nodeManipulation);
 	addLogFunctions(this);
 	addConfigFileProcessor(this);
-	environmentChanges.addMorePrototypes(this, args.updatePrototypes);
+	
+	if (args.updatePrototypes){
+		require('qtFunctionalLib');
+	}
 
 	//BUILD RETURN OBJECT ====================================
 

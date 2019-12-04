@@ -1,0 +1,3 @@
+[submodule "qtFunctionalLib"]
+	path = qtFunctionalLib
+	url = https://github.com/tqwhite/qtFunctionalLib.git
