@@ -63,7 +63,7 @@ var moduleFunction = function(employer, args={}) {
 	addConfigFileProcessor(this);
 	
 	if (args.updatePrototypes){
-		require('qtFunctionalLib');
+		this.qt=require('qtFunctionalLib');
 	}
 
 	//BUILD RETURN OBJECT ====================================
