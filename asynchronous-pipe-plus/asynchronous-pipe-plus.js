@@ -1,13 +1,11 @@
 'use strict';
-const qtoolsGen = require('qtools');
-const qtools = new qtoolsGen(module, { updatePrototypes: true });
 
 //START OF moduleFunction() ============================================================
 
 var moduleFunction = function(args) {
 	/* 
 
-asynchronousPipe() takes an array of asynchronous function and executes them
+asynchronousPipe() takes an array of asynchronous functions and executes them
 in sequence. As each completes, the next is called with the return result of the
 previous function.
 
@@ -30,6 +28,9 @@ next('skipRestOfPipe', result);
 
 This will do as the symbol says, skip the rest of the pipe. It serves the role of 'continue'
 in loops. Practically speaking, it calls the callback with the current value of result and no error.
+It is often good to have special code for in the final callback to 
+change the error status for the next callback in case it's not asynchronousPipe and 
+treats it as an error. Eg, callback(err=='skipRestOfPipe'?'':err, result)
 
 The optional callback function is called as:
 
@@ -38,6 +39,23 @@ The optional callback function is called as:
 asynchronousPipe() does not return anything.
 
  */
+ 
+ 
+	const isArray=item=>(typeof item=='object' && typeof item.length=='number');
+	
+	const logger=message=>{
+		const suffix='[asynchronousPipe.js]';
+		if (typeof message=='string'){
+			console.log(`${message} ${suffix}`)
+		}
+		else{
+		
+			console.log(`${suffix} =======`)
+			console.dir(message);		
+			console.log(`======= ${suffix}`)
+		}
+	
+	}
 
 	// asyncPipe(workList, [initialValue,] callback);
 	const asynchronousPipe = (...args) => {
@@ -72,6 +90,7 @@ asynchronousPipe() does not return anything.
 		};
 		recursion('', initial, 0);
 	};
+	
 	const taskListPlus = function() {
 		const taskList = [];
 		const hiddenArgsName = `asyncPipeHideFromScope${new Date().getTime()}`;
@@ -82,17 +101,17 @@ asynchronousPipe() does not return anything.
 					case 'properties':
 						//{debug:'properties', label:'identifier'}
 						taskList.push((args, next) => {
-							qtools.logDebug(
+							logger(
 								`\nLIST: args (${options.label ? options.label : ''}) =======`
 							);
-							qtools.listProperties(args);
-							qtools.logDebug('======= args\n');
+							logger(Object.keys(args));
+							logger('======= args\n');
 						});
 						break;
 					case 'fileMarker':
 						//{debug:'fileMarker', label:'identifier'}
 						taskList.push((args, next) => {
-							qtools.logDebug(
+							logger(
 								`\n=-========= (${
 									options.label ? options.label : ''
 								}) =======\n`
@@ -104,7 +123,7 @@ asynchronousPipe() does not return anything.
 		};
 
 		this.push = function(item, propertyList, options) {
-			if (qtools.toType(propertyList) == 'array') {
+			if (isArray(propertyList)) {
 				taskList.push(this.reduceToLocalScope(propertyList));
 			}
 
@@ -120,7 +139,7 @@ asynchronousPipe() does not return anything.
 			propertyList,
 			options = {}
 		) {
-			if (qtools.toType(propertyList) == 'array') {
+			if (isArray(propertyList)) {
 				taskList.push(this.reduceToLocalScope(propertyList));
 			}
 
@@ -128,13 +147,8 @@ asynchronousPipe() does not return anything.
 		};
 
 		this.getList = function() {
+			//returns this tasklist for use with pipeRunner()
 			return taskList;
-		};
-
-		this.list = () => {
-			taskList.forEach(item =>
-				console.log(item.toString() + '\n-------------\n')
-			);
 		};
 
 		const isScopeBad = (
@@ -161,7 +175,7 @@ asynchronousPipe() does not return anything.
 
 			if (result) {
 				result = `${result} ${originatingLine}`;
-				qtools.logError(result);
+				logger(result);
 			}
 			return result ? result : false;
 		};
@@ -173,6 +187,7 @@ asynchronousPipe() does not return anything.
 		};
 
 		this.getArgsValue = (args, nameList) => {
+			//extracts values from scope whether hidden or not
 			return nameList.reduce((result, name) => {
 				result[name] = args[hiddenArgsName][name]
 					? args[hiddenArgsName][name]
@@ -182,6 +197,7 @@ asynchronousPipe() does not return anything.
 		};
 
 		this.enforceScope = (propertyList, strict = true) => {
+			//error if args has properties not allowed for local scope
 			let e = new Error();
 			const originatingLine = e.stack.split('\n')[2];
 			taskList.push((args, next) => {
@@ -190,6 +206,7 @@ asynchronousPipe() does not return anything.
 		};
 
 		this.reduceToLocalScope = requiredPropertyList => (args, next) => {
+			//changes (adds or substracts) elements from local scope
 			const localCallback = (err, cleanedArgs) => {
 				next(err, cleanedArgs);
 			};
@@ -210,7 +227,14 @@ asynchronousPipe() does not return anything.
 			const missingElements = requiredPropertyList
 				.filter(item => typeof cleanedArgs[item] == 'undefined')
 				.join(', ');
-			cleanedArgs[hiddenArgsName] = args;
+
+				Object.defineProperty(cleanedArgs, hiddenArgsName, {
+					value: args,
+					writable: false,
+					enumerable: false
+				});
+					
+					
 			localCallback(
 				missingElements
 					? `MISSING ELEMENTS: ${missingElements} (by reduceToLocalScope())`
@@ -219,6 +243,7 @@ asynchronousPipe() does not return anything.
 			);
 		};
 		this.restoreGlobalScope = () => (args, next) => {
+			//returns all properties to the scope
 			const newArgs = Object.assign({}, args[hiddenArgsName], args);
 			delete newArgs[hiddenArgsName];
 			next('', newArgs);
