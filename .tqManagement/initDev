@@ -1,0 +1,48 @@
+#!/bin/bash
+
+
+declare -a outputStringArray
+
+# SERVER SYSTEM SERIES =======================
+# SHORTNAME="short"
+# FULLNAME="nameOfService"
+# 
+# alias log$SHORTNAME="journalctl -f -n1000 --unit=$FULLNAME.service"
+# alias start$SHORTNAME="sudo systemctl start $FULLNAME.service"
+# alias stop$SHORTNAME="sudo systemctl stop $FULLNAME.service"
+# alias restart$SHORTNAME="sudo systemctl restart $FULLNAME.service"
+# alias status$SHORTNAME="sudo systemctl status $FULLNAME.service"
+# outputStringArray+=("$FULLNAME: log$SHORTNAME, restart$SHORTNAME, status$SHORTNAME, stop$SHORTNAME, start$SHORTNAME")
+# 
+
+
+# GENERAL COMMAND SERIES =======================
+# SHORTNAME="short"
+# DESCRIPTION="description"
+# 
+# alias $SHORTNAME="sudo systemctl status $FULLNAME.service"
+# outputStringArray+=("$SHORTNAME: $DESCRIPTION")
+
+SHORTNAME="qtf"
+DESCRIPTION="cd /Users/tqwhite/node_modules/qtools-functional-library"
+
+alias $SHORTNAME="cd /Users/tqwhite/node_modules/qtools-functional-library"
+outputStringArray+=("$SHORTNAME: $DESCRIPTION")
+
+
+
+
+outputStringArray+=("no commands defined");
+
+echo -e "\
+\n\
+================================================================\n\
+Init Local Environment: $USER@$HOSTNAME
+
+
+`for i in "${outputStringArray[@]}"; do echo -e "$i\n"; done`
+
+This file is: ${BASH_SOURCE[0]}
+================================================================\n\
+
+";

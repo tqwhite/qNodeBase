@@ -5,7 +5,7 @@ var events = require('events'),
 	addLogFunctions = require('qtools-log'),
 	nodeManipulation = require('nodeManipulation'),
 	lodash = require('lodash'),
-	addConfigFileProcessor = require('qtools-config-file-processor');
+	addConfigFileProcessor = require('qtools-config-file-processor-dependent-version');
 
 const dayjs = require('dayjs');
 
@@ -63,8 +63,19 @@ var moduleFunction = function(employer, args={}) {
 	addConfigFileProcessor(this);
 	
 	if (args.updatePrototypes){
-		this.qt=require('qtFunctionalLib');
+		require('qtFunctionalLib');
+		this.qt=require('qtools-functional-library');
 	}
+	
+	const commandLineParser=require('qtools-parse-command-line');
+
+
+	Object.assign(this, commandLineParser)
+
+
+
+
+
 
 	//BUILD RETURN OBJECT ====================================
 
